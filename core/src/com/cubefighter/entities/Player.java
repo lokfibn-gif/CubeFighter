@@ -82,6 +82,8 @@ public class Player extends GameObject {
         position.x += velocity.x * deltaTime;
         position.y += velocity.y * deltaTime;
         
+        clampToWorld();
+        
         if (isDashing) {
             dashTimer -= deltaTime;
             if (dashTimer <= 0) {
@@ -95,6 +97,8 @@ public class Player extends GameObject {
                 shieldActive = false;
             }
         }
+        
+        updateCooldowns(deltaTime);
     }
     
     @Override

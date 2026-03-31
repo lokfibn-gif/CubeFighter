@@ -56,6 +56,8 @@ public class Enemy extends GameObject {
         position.x += velocity.x * deltaTime;
         position.y += velocity.y * deltaTime;
         
+        clampToWorld();
+        
         if (!canAttack) {
             attackTimer += deltaTime;
             if (attackTimer >= attackCooldown) {
