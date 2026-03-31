@@ -7,7 +7,7 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.badlogic.gdx.utils.viewport.FitViewport;
+import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.cubefighter.assets.Assets;
 import com.cubefighter.audio.AudioManager;
@@ -21,6 +21,8 @@ import com.cubefighter.screens.VictoryScreen;
 public class CubeFighterGame extends Game {
     public static final float WORLD_WIDTH = 800f;
     public static final float WORLD_HEIGHT = 600f;
+    public static final float MIN_WORLD_WIDTH = 400f;
+    public static final float MIN_WORLD_HEIGHT = 300f;
     
     private SpriteBatch batch;
     private ShapeRenderer shapeRenderer;
@@ -50,7 +52,8 @@ public class CubeFighterGame extends Game {
         font.getData().setScale(1.5f);
         
         camera = new OrthographicCamera();
-        viewport = new FitViewport(WORLD_WIDTH, WORLD_HEIGHT, camera);
+        viewport = new ExtendViewport(WORLD_WIDTH, WORLD_HEIGHT, MIN_WORLD_WIDTH, MIN_WORLD_HEIGHT, camera);
+        viewport.update(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), true);
         camera.position.set(WORLD_WIDTH / 2, WORLD_HEIGHT / 2, 0);
         
         Assets.initialize();
@@ -60,6 +63,13 @@ public class CubeFighterGame extends Game {
         
         loadingScreen = new LoadingScreen(this);
         setScreen(loadingScreen);
+    }
+    
+    @Override
+    public void resize(int width, int height) {
+        viewport.update(width, height, true);
+        camera.position.set(WORLD_WIDTH / 2, WORLD_HEIGHT / 2, 0);
+        super.resize(width, height);
     }
     
     @Override
