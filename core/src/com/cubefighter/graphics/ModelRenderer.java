@@ -1,16 +1,11 @@
 package com.cubefighter.graphics;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g3d.Model;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
-import com.badlogic.gdx.graphics.g3d.Renderable;
-import com.badlogic.gdx.graphics.g3d.Shader;
-import com.badlogic.gdx.graphics.g3d.shaders.DefaultShader;
-import com.badlogic.gdx.graphics.g3d.utils.DefaultShaderProvider;
-import com.badlogic.gdx.graphics.g3d.utils.DefaultTextureBinder;
-import com.badlogic.gdx.graphics.g3d.utils.RenderContext;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.Quaternion;
@@ -19,9 +14,6 @@ import com.badlogic.gdx.utils.Array;
 public class ModelRenderer {
     
     private ModelBatch modelBatch;
-    private RenderContext renderContext;
-    private Shader shader;
-    
     private Array<ModelInstance> modelInstances;
     
     private Model playerModel;
@@ -30,16 +22,7 @@ public class ModelRenderer {
     
     public ModelRenderer() {
         modelInstances = new Array<>();
-        
-        renderContext = new RenderContext(new DefaultTextureBinder(DefaultTextureBinder.WEIGHTED, 1));
-        shader = new DefaultShader(
-            new Renderable(),
-            new DefaultShader.Config()
-        );
-        shader.init();
-        
-        modelBatch = new ModelBatch(new DefaultShaderProvider());
-        
+        modelBatch = new ModelBatch();
         loadModels();
     }
     
@@ -51,13 +34,9 @@ public class ModelRenderer {
     
     public void begin(Camera camera) {
         modelBatch.begin(camera);
-        renderContext.begin();
-        shader.begin(camera, renderContext);
     }
     
     public void end() {
-        shader.end();
-        renderContext.end();
         modelBatch.end();
     }
     
@@ -109,16 +88,8 @@ public class ModelRenderer {
         }
     }
     
-    public void renderCube(Vector3 position, Vector3 scale, float[] color) {
-    }
-    
-    public void setProjectionMatrix(Matrix4 matrix) {
-        modelBatch.getRenderContext().getProjectionMatrix().set(matrix);
-    }
-    
     public void dispose() {
         modelBatch.dispose();
-        shader.dispose();
         ModelLoader.dispose();
     }
 }

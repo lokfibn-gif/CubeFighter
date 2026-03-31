@@ -36,7 +36,7 @@ public class ModelLoader {
         Array<int[]> faces = new Array<>();
         
         try {
-            BufferedReader reader = Gdx.files.internal(filename).reader();
+            BufferedReader reader = new BufferedReader(Gdx.files.internal(filename).reader());
             String line;
             
             while ((line = reader.readLine()) != null) {
