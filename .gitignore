@@ -1,0 +1,53 @@
+# Build outputs
+/build/
+/android/build/
+/core/build/
+*.apk
+*.aab
+*.ap_
+*.dex
+
+# Gradle
+.gradle/
+local.properties
+.gradletasknamecache
+
+# IDE
+.idea/
+*.iml
+*.ipr
+*.iws
+.project
+.classpath
+.settings/
+.vscode/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+*.tmp
+
+# Sensitive files
+*.keystore
+*.jks
+secrets.properties
+api_keys.properties
+credentials.properties
+
+# Native libraries (rebuilt from source)
+libs/
+*.so
+*.dll
+*.dylib
+
+# Temporary files
+*.swp
+*.swo
+*~
+
+# APK files (build artifacts)
+*.apk
+*.aab
