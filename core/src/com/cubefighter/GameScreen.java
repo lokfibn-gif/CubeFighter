@@ -605,45 +605,94 @@ public class GameScreen implements Screen {
         shapeRenderer.end();
     }
     
-    private void renderUI() {
+private void renderUI() {
         batch.begin();
         
         font.setColor(Color.WHITE);
+        font.getData().setScale(1.0f);
         font.draw(batch, "Level: " + currentLevel + "/" + MAX_LEVELS, 10, CubeFighterGame.WORLD_HEIGHT - 20);
         font.draw(batch, "Wave: " + waveManager.getCurrentWave(), 10, CubeFighterGame.WORLD_HEIGHT - 45);
         font.draw(batch, "Score: " + scoreSystem.getScore(), 10, CubeFighterGame.WORLD_HEIGHT - 70);
-        font.draw(batch, "Combo: x" + scoreSystem.getComboMultiplier(), 10, CubeFighterGame.WORLD_HEIGHT - 95);
+        font.draw(batch, "Combo: x" + String.format("%.1f", scoreSystem.getComboMultiplier()), 10, CubeFighterGame.WORLD_HEIGHT - 95);
         
         float timeSeconds = gameTimer;
         int minutes = (int) (timeSeconds / 60);
         int seconds = (int) (timeSeconds % 60);
         font.draw(batch, String.format("Time: %02d:%02d", minutes, seconds), 
-            CubeFighterGame.WORLD_WIDTH - 100, CubeFighterGame.WORLD_HEIGHT - 20);
+            CubeFighterGame.WORLD_WIDTH - 120, CubeFighterGame.WORLD_HEIGHT - 20);
         
         Player player = gameWorld.getPlayer();
         if (player != null) {
-            font.draw(batch, "HP: " + player.getHp() + "/" + player.getMaxHp(), 10, 30);
+            // HP Bar - moved up to avoid overlap with controls
+            font.getData().setScale(0.9f);
+            font.draw(batch, "HP: " + player.getHp() + "/" + player.getMaxHp(), 10, 75);
             
             float hpPercent = (float) player.getHp() / player.getMaxHp();
             batch.end();
-            shapeRenderer.setColor(Color.RED);
+            
+            // HP Bar background
+            shapeRenderer.setColor(Color.DARK_GRAY);
             shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
-            shapeRenderer.rect(10, 50, 150 * hpPercent, 15);
+            shapeRenderer.rect(10, 55, 150, 12);
             shapeRenderer.end();
-            shapeRenderer.setColor(Color.GRAY);
+            
+            // HP Bar fill
+            if (hpPercent > 0.5f) {
+                shapeRenderer.setColor(Color.GREEN);
+            } else if (hpPercent > 0.25f) {
+                shapeRenderer.setColor(Color.YELLOW);
+            } else {
+                shapeRenderer.setColor(Color.RED);
+            }
+            shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
+            shapeRenderer.rect(10, 55, 150 * hpPercent, 12);
+            shapeRenderer.end();
+            
+            // HP Bar border
+            shapeRenderer.setColor(Color.WHITE);
             shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
-            shapeRenderer.rect(10, 50, 150, 15);
+            shapeRenderer.rect(10, 55, 150, 12);
             shapeRenderer.end();
+            
             batch.begin();
+            
+            // Ability cooldowns
+            font.getData().setScale(0.7f);
+            font.setColor(Color.CYAN);
+            float abilityY = 30;
+            float abilityX = 200;
+            
+            String dashStatus = player.dashAvailable() ? "[SPACE] Dash" : "[SPACE] Dash (CD)";
+            String shieldStatus = player.shieldAvailable() ? "[Q] Shield" : "[Q] Shield (CD)";
+            String healStatus = player.healAvailable() ? "[E] Heal" : "[E] Heal (CD)";
+            String ultStatus = player.ultimateAvailable() ? "[R] Ult" : "[R] Ult (CD)";
+            
+            font.setColor(player.dashAvailable() ? Color.GREEN : Color.GRAY);
+            font.draw(batch, dashStatus, abilityX, abilityY);
+            
+            font.setColor(player.shieldAvailable() ? Color.GREEN : Color.GRAY);
+            font.draw(batch, shieldStatus, abilityX + 100, abilityY);
+            
+            font.setColor(player.healAvailable() ? Color.GREEN : Color.GRAY);
+            font.draw(batch, healStatus, abilityX + 210, abilityY);
+            
+            font.setColor(player.ultimateAvailable() ? Color.YELLOW : Color.GRAY);
+            font.draw(batch, ultStatus, abilityX + 300, abilityY);
         }
         
-        String controlsHint = "[WASD/Arrows] Move | [Click] Shoot | [Space] Dash | [Q] Shield | [E] Heal | [R] Ultimate";
+        // Controls hint - moved to very bottom, smaller font
+        font.setColor(Color.LIGHT_GRAY);
+        font.getData().setScale(0.6f);
+        String controlsHint = "[WASD] Move  |  [Click] Attack  |  [ESC] Pause";
+        float textWidth = controlsHint.length() * 4.5f;
+        font.draw(batch, controlsHint, (CubeFighterGame.WORLD_WIDTH - textWidth) / 2, 15);
+        
+        // Pause indicator
+        font.setColor(Color.WHITE);
         font.getData().setScale(0.8f);
-        font.draw(batch, controlsHint, CubeFighterGame.WORLD_WIDTH / 2 - 280, 20);
-        font.getData().setScale(1.5f);
+        font.draw(batch, "[ESC] Pause", CubeFighterGame.WORLD_WIDTH - 110, 30);
         
-        font.draw(batch, "[ESC] Pause", CubeFighterGame.WORLD_WIDTH - 100, 30);
-        
+        font.getData().setScale(1.0f);
         batch.end();
     }
     
